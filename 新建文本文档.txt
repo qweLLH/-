@@ -1,0 +1,42 @@
+import requests
+import time
+
+def auto_check_in(username, password):
+    login_url = 'https://example.com/login'  # 替换为实际的登录URL
+    check_in_url = 'https://example.com/check-in'  # 替换为实际的打卡URL
+
+    # 创建会话
+    session = requests.Session()
+
+    # 登录
+    login_data = {
+        'username': username,
+        'password': password
+    }
+    response = session.post(login_url, data=login_data)
+    if response.status_code == 200:
+        print('登录成功')
+    else:
+        print('登录失败')
+        return
+
+    # 等待到指定时间
+    target_time = time.strptime('08:00', '%H:%M')  # 设置目标打卡时间
+    while True:
+        current_time = time.localtime()
+        if current_time.tm_hour == target_time.tm_hour and current_time.tm_min == target_time.tm_min:
+            break
+        time.sleep(60)  # 每隔60秒检查一次时间
+
+    # 打卡
+    response = session.post(check_in_url)
+    if response.status_code == 200:
+        print('打卡成功')
+    else:
+        print('打卡失败')
+
+# 替换为实际的用户名和密码
+username = 'your_username'
+password = 'your_password'
+
+auto_check_in(username, password)
